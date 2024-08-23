@@ -1,40 +1,77 @@
-import { faker } from "@faker-js/faker";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import EmptyList from "@/components/global/EmptyList";
+import { deleteProductAction, fetchAdminProducts } from "@/utils/actions";
+import Link from "next/link";
 
-const createProductAction = async (formData: FormData) => {
-    "use server";
-    const name = formData.get("name") as string;
-    console.log(name);
-};
+import { formatCurrency } from "@/utils/format";
+import {
+    Table,
+    TableBody,
+    TableCaption,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table";
+import { IconButton } from "@/components/form/Buttons";
+import FormContainer from "@/components/form/FormContainer";
 
-function CreateProductPage() {
-    const name = faker.commerce.productName();
-    const company = faker.company.name();
-    const description = faker.lorem.paragraph({ min: 10, max: 12 });
+async function ItemsPage() {
+    const items = await fetchAdminProducts();
+    if (items.length === 0) return <EmptyList />;
     return (
         <section>
-            <h1 className='text-2xl font-semibold mb-8 capitalize'>
-                create product
-            </h1>
-            <div className='border p-8 rounded-md'>
-                <form action={createProductAction}>
-                    <div className='mb-2'>
-                        <Label htmlFor='name'>Product Name</Label>
-                        <Input
-                            id='name'
-                            name='name'
-                            type='text'
-                            defaultValue={name}
-                        />
-                    </div>
-                    <Button type='submit' size='lg'>
-                        Submit
-                    </Button>
-                </form>
-            </div>
+            <Table>
+                <TableCaption className='capitalize'>
+                    total products : {items.length}
+                </TableCaption>
+                <TableHeader>
+                    <TableRow>
+                        <TableHead>Product Name</TableHead>
+                        <TableHead>Company</TableHead>
+                        <TableHead>Price</TableHead>
+                        <TableHead>Actions</TableHead>
+                    </TableRow>
+                </TableHeader>
+                <TableBody>
+                    {items.map((item) => {
+                        const { id: productId, name, company, price } = item;
+                        return (
+                            <TableRow key={productId}>
+                                <TableCell>
+                                    <Link
+                                        href={`/products/${productId}`}
+                                        className='underline text-muted-foreground tracking-wide capitalize'
+                                    >
+                                        {name}
+                                    </Link>
+                                </TableCell>
+                                <TableCell>{company}</TableCell>
+                                <TableCell>{formatCurrency(price)}</TableCell>
+
+                                <TableCell className='flex items-center gap-x-2'>
+                                    <Link
+                                        href={`/admin/products/${productId}/edit`}
+                                    >
+                                        <IconButton actionType='edit'></IconButton>
+                                    </Link>
+                                    <DeleteProduct productId={productId} />
+                                </TableCell>
+                            </TableRow>
+                        );
+                    })}
+                </TableBody>
+            </Table>
         </section>
     );
 }
-export default CreateProductPage;
+
+function DeleteProduct({ productId }: { productId: string }) {
+    const deleteProduct = deleteProductAction.bind(null, { productId });
+    return (
+        <FormContainer action={deleteProduct}>
+            <IconButton actionType='delete' />
+        </FormContainer>
+    );
+}
+
+export default ItemsPage;
