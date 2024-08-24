@@ -10,6 +10,7 @@ import {
 } from "./schemas";
 import { deleteImage, uploadImage } from "./supabase";
 import { revalidatePath } from "next/cache";
+import { Cousine } from "next/font/google";
 
 const renderError = (error: unknown) => {
     console.log(error);
@@ -277,4 +278,21 @@ export const fetchProductReviews = async (productId: string) => {
 };
 export const fetchProductReviewByUser = async () => {};
 export const findExistingReview = async () => {};
-export const fetchProductRating = async () => {};
+export const fetchProductRating = async (productId: string) => {
+    const results = await db.review.groupBy({
+        by: ["productId"],
+        _avg: {
+            rating: true,
+        },
+        _count: {
+            rating: true,
+        },
+        where: {
+            productId,
+        },
+    });
+    return {
+        rating: results[0]?._avg.rating?.toFixed(1) ?? 0,
+        count: results[0]?._count.rating ?? 0,
+    };
+};
