@@ -345,11 +345,11 @@ export const deleteReviewAction = async (prevState: { reviewId: string }) => {
 
 // ### FetchCartItems
 export const fetchCartItems = async () => {
-    const { userId } = auth();
+    const user = await getAuthUser();
 
     const cart = await db.cart.findFirst({
         where: {
-            clerkId: userId ?? "",
+            clerkId: user.id ?? "",
         },
         select: {
             numItemsInCart: true,
