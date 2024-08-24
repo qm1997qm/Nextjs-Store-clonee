@@ -1,4 +1,4 @@
-function page() {
-    return <div>page</div>;
+function CartPage() {
+    return <div>CartPage</div>;
 }
-export default page;
+export default CartPage;
