@@ -297,7 +297,15 @@ export const fetchProductReviewsByUser = async () => {
 
     return reviews;
 };
-export const findExistingReview = async () => {};
+export const findExistingReview = async (userId: string, productId: string) => {
+    return await db.review.findFirst({
+        where: {
+            clerkId: userId,
+            productId,
+        },
+    });
+};
+
 export const fetchProductRating = async (productId: string) => {
     const results = await db.review.groupBy({
         by: ["productId"],
