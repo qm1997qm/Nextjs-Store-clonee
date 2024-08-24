@@ -480,10 +480,11 @@ export const addToCartAction = async (prevState: any, formData: FormData) => {
         const cart = await fetchOrCreateCart({ userId: user.id });
         await updateOrCreateCartItem({ productId, cartId: cart.id, amount });
         await updateCart(cart);
+        revalidatePath(`/products/${productId}`);
+        return { message: "Product added to cart" };
     } catch (error) {
         return renderError(error);
     }
-    redirect("/cart");
 };
 export const removeCartItemAction = async () => {};
 export const updateCartItemAction = async () => {};
