@@ -5,6 +5,7 @@ import { formatCurrency } from "@/utils/format";
 import FavoriteToggleButton from "@/components/products/FavoriteToggleButton";
 import AddToCart from "@/components/single-product/AddToCart";
 import ProductRating from "@/components/single-product/ProductRating";
+import ShareButton from "@/components/single-product/ShareButton";
 async function SingleProductPage({ params }: { params: { id: string } }) {
     const product = await fetchSingleProduct(params.id);
     const { name, image, company, description, price } = product;
@@ -31,6 +32,10 @@ async function SingleProductPage({ params }: { params: { id: string } }) {
                             {name}
                         </h1>
                         <FavoriteToggleButton productId={params.id} />
+                        <ShareButton
+                            name={product.name}
+                            productId={params.id}
+                        />
                     </div>
                     <ProductRating productId={params.id} />
                     <h4 className='text-xl mt-2'>{company}</h4>
