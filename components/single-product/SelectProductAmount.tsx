@@ -12,24 +12,26 @@ export enum Mode {
 }
 
 type SelectProductAmountProps = {
-    mode: Mode.SingleProduct;
+    // mode: Mode.SingleProduct;
     amount: number;
     setAmount: (value: number) => void;
 };
 
-type SelectCartItemAmountProps = {
-    mode: Mode.CartItem;
-    amount: number;
-    setAmount: (value: number) => Promise<void>;
-    isLoading: boolean;
-};
+// type SelectCartItemAmountProps = {
+//     mode: Mode.CartItem;
+//     amount: number;
+//     setAmount: (value: number) => Promise<void>;
+//     isLoading: boolean;
+// };
 
 function SelectProductAmount(
-    props: SelectProductAmountProps | SelectCartItemAmountProps
-) {
-    const { mode, amount, setAmount } = props;
+    props: SelectProductAmountProps
 
-    const cartItem = mode === Mode.CartItem;
+    //| SelectCartItemAmountProps
+) {
+    const { amount, setAmount } = props;
+
+    // const cartItem = mode === Mode.CartItem;
 
     return (
         <>
@@ -37,23 +39,20 @@ function SelectProductAmount(
             <Select
                 defaultValue={amount.toString()}
                 onValueChange={(value) => setAmount(Number(value))}
-                disabled={cartItem ? props.isLoading : false}
+                // disabled={cartItem ? props.isLoading : false}
             >
-                <SelectTrigger className={cartItem ? "w-[100px]" : "w-[150px]"}>
+                <SelectTrigger className={"w-[150px]"}>
                     <SelectValue placeholder={amount} />
                 </SelectTrigger>
                 <SelectContent>
-                    {Array.from(
-                        { length: cartItem ? amount + 10 : 10 },
-                        (_, index) => {
-                            const selectValue = (index + 1).toString();
-                            return (
-                                <SelectItem key={index} value={selectValue}>
-                                    {selectValue}
-                                </SelectItem>
-                            );
-                        }
-                    )}
+                    {Array.from({ length: 10 }, (_, index) => {
+                        const selectValue = (index + 1).toString();
+                        return (
+                            <SelectItem key={index} value={selectValue}>
+                                {selectValue}
+                            </SelectItem>
+                        );
+                    })}
                 </SelectContent>
             </Select>
         </>
