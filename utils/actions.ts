@@ -349,7 +349,7 @@ export const fetchCartItems = async () => {
 
     const cart = await db.cart.findFirst({
         where: {
-            clerkId: user.id ?? "",
+            clerkId: user?.id ?? "",
         },
         select: {
             numItemsInCart: true,
